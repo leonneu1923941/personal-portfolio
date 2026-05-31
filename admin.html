@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CMS — Leon Neuhäuser Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+
+  :root {
+    --bg:        #EBEBEB;
+    --surface:   #FFFFFF;
+    --surface-2: #F4F4F4;
+    --ink:       #0A0A0A;
+    --ink-2:     #5E5E5E;
+    --ink-3:     #A8A8A8;
+    --line:      #E4E4E4;
+    --accent:    #2D6BFF;
+    --accent-soft: #E2EAFF;
+    --r:         16px;
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --success: #19A36B;
+    --danger: #E53935;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 10;
+  }
+  .sidebar-head {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+  }
+  .sidebar-logo svg { flex-shrink: 0; }
+  .sidebar-sub { font-size: 11px; color: var(--ink-3); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+  .nav-group-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-3); padding: 10px 10px 4px;
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 9px 10px; border: none; border-radius: 10px;
+    background: transparent; color: var(--ink-2); font: 500 13px/1.3 var(--font);
+    cursor: pointer; text-align: left; transition: background 120ms, color 120ms;
+  }
+  .nav-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .nav-btn.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-btn svg { flex-shrink: 0; opacity: 0.7; }
+  .nav-btn.active svg { opacity: 1; }
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 11px 16px; border: none; border-radius: 10px;
+    background: var(--accent); color: #fff; font: 600 13px/1 var(--font);
+    cursor: pointer; transition: background 120ms;
+  }
+  .btn-primary:hover { background: #1A52E0; }
+  .btn-secondary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 9px 16px; border: 1px solid var(--line); border-radius: 10px;
+    background: transparent; color: var(--ink-2); font: 500 13px/1 var(--font);
+    cursor: pointer; transition: background 120ms;
+    text-decoration: none;
+  }
+  .btn-secondary:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* ── Main content area ── */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    background: rgba(235,235,235,0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .topbar-title { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; font: 500 13px/1 var(--font);
+    padding: 12px 20px; border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 1000; pointer-events: none;
+    opacity: 0; transition: opacity 200ms;
+  }
+  .toast.visible { opacity: 1; }
+
+  .content { padding: 32px; max-width: 760px; }
+
+  /* ── Form elements ── */
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .card {
+    background: var(--surface); border-radius: var(--r);
+    border: 1px solid var(--line); padding: 24px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--ink);
+  }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--ink-2); margin-bottom: 6px; letter-spacing: 0.02em;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  input[type="text"], input[type="url"], input[type="email"], textarea, select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface-2); color: var(--ink);
+    font: 400 14px/1.4 var(--font);
+    outline: none; transition: border-color 120ms;
+    resize: vertical;
+    appearance: none;
+  }
+  input[type="text"]:focus, input[type="url"]:focus, input[type="email"]:focus,
+  textarea:focus, select:focus {
+    border-color: var(--accent); background: #fff;
+  }
+  textarea { min-height: 80px; }
+  textarea.tall { min-height: 120px; }
+  .hint { font-size: 11px; color: var(--ink-3); margin-top: 5px; }
+
+  /* ── Tag / chip inputs ── */
+  .tags-input {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 8px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface-2); min-height: 44px; cursor: text;
+    transition: border-color 120ms;
+  }
+  .tags-input:focus-within { border-color: var(--accent); background: #fff; }
+  .tag-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    font: 500 12px/1 var(--font); white-space: nowrap;
+  }
+  .tag-chip button {
+    border: none; background: none; color: inherit; cursor: pointer;
+    padding: 0; font-size: 14px; line-height: 1; opacity: 0.7;
+  }
+  .tag-chip button:hover { opacity: 1; }
+  .tags-input input {
+    border: none; background: transparent; outline: none; padding: 4px 4px;
+    font: 400 13px/1 var(--font); color: var(--ink); min-width: 80px; flex: 1;
+  }
+
+  /* ── Logo list ── */
+  .logo-row {
+    display: grid; grid-template-columns: 1fr 2fr auto; gap: 8px;
+    align-items: center; margin-bottom: 8px;
+  }
+  .logo-row:last-child { margin-bottom: 0; }
+  .btn-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 8px;
+    background: transparent; color: var(--ink-3); cursor: pointer; flex-shrink: 0;
+    transition: background 120ms, color 120ms;
+  }
+  .btn-icon:hover { background: var(--surface-2); color: var(--danger); }
+  .btn-add {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border: 1px dashed var(--line); border-radius: 10px;
+    background: transparent; color: var(--ink-3); font: 500 13px/1 var(--font);
+    cursor: pointer; width: 100%; transition: border-color 120ms, color 120ms;
+    margin-top: 8px;
+  }
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Testimonials / List items ── */
+  .list-item {
+    background: var(--surface-2); border-radius: 12px; padding: 16px;
+    margin-bottom: 10px; position: relative;
+  }
+  .list-item-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .list-item-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .list-item-actions { display: flex; gap: 6px; }
+
+  /* ── Case study nested editor ── */
+  .approach-group { background: var(--bg); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+  .approach-group-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .bullet-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .bullet-row input { flex: 1; }
+
+  /* ── Tabs within case editor ── */
+  .case-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .case-tab {
+    padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
+    background: transparent; color: var(--ink-2); font: 500 12px/1 var(--font);
+    cursor: pointer; transition: all 120ms; white-space: nowrap;
+  }
+  .case-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* ── Image upload cards ── */
+  .img-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .img-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .img-preview {
+    width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+    background: var(--surface-2); display: block;
+  }
+  .img-preview.portrait { aspect-ratio: 2 / 3; object-fit: cover; }
+  .img-preview.wide     { aspect-ratio: 16 / 9; }
+  .img-preview.tall     { aspect-ratio: 4 / 5; }
+  .img-placeholder {
+    width: 100%; aspect-ratio: 1 / 1; background: var(--surface-2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; color: var(--ink-3); font-size: 12px;
+    cursor: pointer; transition: background 120ms;
+  }
+  .img-placeholder.portrait { aspect-ratio: 2 / 3; }
+  .img-placeholder.wide     { aspect-ratio: 16 / 9; }
+  .img-placeholder.tall     { aspect-ratio: 4 / 5; }
+  .img-placeholder:hover    { background: var(--accent-soft); color: var(--accent); }
+  .img-card-footer {
+    padding: 10px 12px; display: flex; align-items: center;
+    justify-content: space-between; gap: 8px; border-top: 1px solid var(--line);
+  }
+  .img-card-label { font-size: 12px; font-weight: 600; color: var(--ink); }
+  .img-card-sub   { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .img-drop-overlay {
+    position: absolute; inset: 0; background: rgba(45,107,255,0.12);
+    border: 2px dashed var(--accent); border-radius: var(--r);
+    display: none; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: var(--accent);
+  }
+  .img-drop-overlay.active { display: flex; }
+
+  /* ── Import/Export area ── */
+  .import-area {
+    border: 2px dashed var(--line); border-radius: var(--r); padding: 32px 24px;
+    text-align: center; cursor: pointer; transition: border-color 120ms, background 120ms;
+  }
+  .import-area:hover, .import-area.drag-over {
+    border-color: var(--accent); background: var(--accent-soft);
+  }
+  .import-area p { margin: 8px 0 0; font-size: 13px; color: var(--ink-2); }
+
+  /* ── Status indicator ── */
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success); flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(25,163,107,0.15);
+  }
+  .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); }
+
+  /* ── Responsive hide ── */
+  @media (max-width: 680px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .content { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-logo">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <path d="M16 16 C 9 6, 3 6, 3 16 C 3 26, 9 26, 16 16 Z" fill="currentColor"/>
+        <path d="M16 16 C 23 6, 29 6, 29 16 C 29 26, 23 26, 16 16 Z" fill="currentColor"/>
+      </svg>
+      Portfolio CMS
+    </div>
+    <div class="sidebar-sub">Leon Neuhäuser</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Content</div>
+    <button class="nav-btn active" data-section="profile" onclick="showSection('profile')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Profile
+    </button>
+    <button class="nav-btn" data-section="skills" onclick="showSection('skills')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Skills
+    </button>
+    <button class="nav-btn" data-section="clients" onclick="showSection('clients')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      Clients & Logos
+    </button>
+    <button class="nav-btn" data-section="testimonials" onclick="showSection('testimonials')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Testimonials
+    </button>
+
+    <button class="nav-btn" data-section="images" onclick="showSection('images')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      Images
+    </button>
+
+    <div class="nav-group-label">Work</div>
+    <button class="nav-btn" data-section="work-cards" onclick="showSection('work-cards')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Work Cards
+    </button>
+    <button class="nav-btn" data-section="cases" onclick="showSection('cases')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Case Studies
+    </button>
+
+    <div class="nav-group-label">Site</div>
+    <button class="nav-btn" data-section="contact" onclick="showSection('contact')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact
+    </button>
+    <button class="nav-btn" data-section="footer" onclick="showSection('footer')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Footer
+    </button>
+    <button class="nav-btn" data-section="import-export" onclick="showSection('import-export')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/><polyline points="8 7 3 12 8 17"/></svg>
+      Import / Export
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="status-row">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Changes saved</span>
+    </div>
+    <button class="btn-primary" onclick="saveAll()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save changes
+    </button>
+    <a class="btn-secondary" href="index.html" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View portfolio
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Profile</div>
+    <div class="topbar-actions">
+      <button class="btn-secondary" style="width:auto;padding:8px 16px" onclick="resetToDefaults()" title="Reset all content to defaults">Reset to defaults</button>
+    </div>
+  </div>
+
+  <div class="content" id="content-area">
+    <!-- sections rendered by JS -->
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+const STORAGE_KEY  = 'leon_portfolio_content';
+const CASES_KEY    = 'leon_portfolio_cases';
+const SECTION_TITLES = {
+  profile: 'Profile', skills: 'Skills', clients: 'Clients & Logos',
+  testimonials: 'Testimonials', images: 'Images',
+  'work-cards': 'Work Cards', cases: 'Case Studies',
+  contact: 'Contact', footer: 'Footer',
+  'import-export': 'Import / Export',
+};
+
+let data = loadData();
+let currentSection = 'profile';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return getDefaults();
+}
+
+function getDefaults() {
+  return {
+    brand: { handle: "@leon", domain: "amezen-artworks.com" },
+    nav: {
+      EN: { info: "Info", work: "Work", contact: "Contact" },
+      DE: { info: "Info", work: "Arbeit", contact: "Kontakt" }
+    },
+    info: {
+      bio: {
+        EN: "A Berlin-born, world-roaming Senior Art Director & Brand Designer with 9+ years of experience. I craft strategic identities, editorial visuals and digital experiences for brands that want to feel as good as they look.",
+        DE: "Ein in Berlin geborener, weltreisender Senior Art Director & Brand Designer mit über 9 Jahren Erfahrung. Ich gestalte strategische Identitäten, editoriale Visuals und digitale Erlebnisse für Marken, die sich so gut anfühlen wollen, wie sie aussehen."
+      },
+      skills: ["Brand Identity","Web Design","Art Direction","Brand Strategy","Coaching","Webflow","Adobe CC"],
+      clients: ["Ottokar","Maitiri Kakao","Joe Trenk","Caretable","neuweiss","Oakstone Hills"],
+      clientLogos: [
+        {name:"Maitiri Kakao",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/69204b4a338d8b59f4724296_Maitiri.svg"},
+        {name:"Ottokar",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcc5580636dddc01f62c2_Ottokar_Logo.svg"},
+        {name:"Coco",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcc55464ab03718fc55b5_Coco_Logo.svg"},
+        {name:"Joe Trenk",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/691258c468928df48c5617c8_Joe-Trenk-fullname_vector.svg"},
+        {name:"Caretable",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcd715e4ecda9ee76fb6e_Caretable_Logo.svg"},
+        {name:"neuweiss",src:"https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/691f810fc31be0cf8f322949_neuweiss.svg"}
+      ],
+      featured: ["oakstone","maitiri"],
+      testimonials: [
+        {name:"Clara Mendes",role:"Founder, Oakstone Hills",quote:{EN:"Leon understood our brand before we could explain it. The site feels exactly like the place does in person.",DE:"Leon hat unsere Marke verstanden, bevor wir sie erklären konnten. Die Seite fühlt sich genau so an wie der Ort selbst."}},
+        {name:"Anika Roth",role:"Maitiri Kakao",quote:{EN:"Calm, clear and genuinely fun to work with. Our feed finally looks the way the cacao tastes.",DE:"Ruhig, klar und wirklich schön in der Zusammenarbeit. Unser Feed sieht endlich so aus, wie der Kakao schmeckt."}},
+        {name:"Joe Trenk",role:"Leben Lehrt",quote:{EN:"He built my website twice without ever making me feel like a problem. Rare, and very Leon.",DE:"Er hat meine Website zweimal gebaut, ohne mir je das Gefühl zu geben, ein Problem zu sein. Selten, und sehr Leon."}}
+      ]
+    },
+    work: {
+      cases: [
+        {id:"oakstone",title:"Oakstone Hills",year:"2025",tags:["Brand Identity","Web Design"],desc:{EN:"Complete brand system and Webflow site for a premium real estate developer.",DE:"Komplettes Markensystem und Webflow-Website für einen Premium-Immobilienentwickler."},tone:"moody"},
+        {id:"maitiri",title:"Maitiri Kakao",year:"2024",tags:["Social Media","Graphic Design"],desc:{EN:"Two months of social media management, content creation and brand graphics for a ceremonial cacao brand.",DE:"Zwei Monate Social-Media-Management, Content-Produktion und Markengrafik für eine zeremonielle Kakao-Marke."},tone:"earthy"},
+        {id:"joetrenk",title:"Joe Trenk / Leben Lehrt",year:"2023",tags:["Web Design","Brand"],desc:{EN:"Website design and development for a German life coach — built twice, loved both times.",DE:"Webdesign und Entwicklung für einen deutschen Life-Coach — zweimal gebaut, beide Male geliebt."},tone:"portrait"},
+        {id:"neuweiss",title:"neuweiss",year:"2024",tags:["Brand Identity"],desc:{EN:"Visual identity system for a modern interior and real estate brand.",DE:"Visuelles Identitätssystem für eine moderne Interior- und Immobilienmarke."},tone:"architectural"}
+      ],
+      note:{EN:"Most of my work is under NDA. If you'd like to see more — let's talk.",DE:"Der Großteil meiner Arbeit unterliegt einer NDA. Wenn du mehr sehen möchtest — lass uns reden."},
+      cta:{EN:"Book a Call",DE:"Termin buchen"}
+    },
+    contact: {
+      headline:{EN:"Let's create something real.",DE:"Lass uns etwas Echtes erschaffen."},
+      sub:{EN:"Whether it's a brand, a website or a conversation — I'm just a message away.",DE:"Ob Marke, Website oder Gespräch — ich bin nur eine Nachricht entfernt."},
+      email:"amezen.artworks@gmail.com",
+      booking:{label:{EN:"Book a free call",DE:"Kostenloses Gespräch buchen"},href:"https://cal.com/amezen.artworks",display:"cal.com/amezen.artworks"},
+      location:{EN:"Currently based in Bali, Indonesia — working globally",DE:"Derzeit auf Bali, Indonesien — weltweit tätig"},
+      socials:[{label:"Instagram",handle:"@leonslifelearnings",href:"https://instagram.com/leonslifelearnings"},{label:"LinkedIn",handle:"Leon",href:"#"}]
+    },
+    ui: {
+      selectedWork:{EN:"Selected work",DE:"Ausgewählte Arbeiten"},
+      seeAll:{EN:"See all work",DE:"Alle Arbeiten"},
+      kindWords:{EN:"Kind words",DE:"Schöne Worte"},
+      viewCase:{EN:"View case study",DE:"Case Study ansehen"}
+    },
+    footer: {
+      tagline:{EN:"Let's keep in touch",DE:"Bleiben wir in Kontakt"},
+      instagram:{label:"Instagram",handle:"@leonslifelearnings",href:"https://instagram.com/leonslifelearnings"},
+      email:{label:"Email",value:"amezen.artworks@gmail.com"},
+      rights:{EN:"All rights reserved",DE:"Alle Rechte vorbehalten"},
+      brand:"Âmezen Artworks"
+    },
+    cases: getDefaultCases()
+  };
+}
+
+function getDefaultCases() {
+  return {
+    oakstone:{id:"oakstone",title:"Oakstone Hills",tagline:"Movement for body & mind — a retreat website experience.",year:"2025",client:"Oakstone Hills",tone:"moody",tags:["Brand Identity","Web Design"],services:["Visual Art Direction","Concept & Strategy","Web Design","Webflow Development","Project Management"],background:"Oakstone Hills is an exclusive retreat destination in the hills of Portugal — a space for yoga, functional training and conscious regeneration, embedded in a nature immersion. The goal was to translate the essence of the place into a digital experience: warm, grounded and nature-driven, and at the same time premium, minimal and modern.",challenge:{intro:"The key challenge was capturing the emotional core of Oakstone Hills and turning it into a high-converting digital environment:",items:["Translating the founder's vision into an authentic brand tone","Creating a powerful storytelling and visual flow","Choosing and implementing the ideal booking platform","Aligning multiple creative disciplines — copy, photography, brand design","Designing a smooth, intuitive booking process"]},approach:[{group:"Brand & positioning strategy",items:["Market & trend research","Competitor audit & benchmarking","Customer personas & journey mapping"]},{group:"Content & structure strategy",items:["Sitemap & conversion-focused wireframes","Messaging guidance & brand tone refinement","Clear and intuitive content flow","Call-to-action placement & booking orientation"]},{group:"Visual art direction",items:["Warm, nature-inspired palette","Photography direction: bright, authentic, human-centered","Organic shapes, calm spacing, refined typography","Visual storytelling grounded in nature and movement"]},{group:"Web design & development",items:["Custom Webflow build","Smooth animations & micro-interactions","Fully responsive mobile experience","Accessible navigation & clear conversion paths"]},{group:"Booking system implementation",items:["Evaluation & testing of multiple platforms","Final integration of Bookinglayer","UX planning for the booking flow","Technical configuration & launch support"]}],result:{intro:"A calm yet compelling digital brand experience that evokes trust, inspires action, and brings guests into the world of Oakstone Hills.",outcomes:["A strong, cohesive brand identity","High-quality visual presence aligned with the retreat experience","Intuitive navigation and booking journey","Increased visitor engagement & booking confidence","Positive client & guest feedback post-launch"],closing:"The website connects nature, movement and stillness with a modern, premium digital touch — making retreat booking seamless, inviting and emotionally resonant."}},
+    maitiri:{id:"maitiri",title:"Maitiri Kakao",tagline:"Ceremonial cacao, shared with the world — a two-month social story.",year:"2024",client:"Maitiri Kakao",tone:"earthy",tags:["Social Media","Graphic Design"],services:["Social Media Strategy","Content Creation","Brand Graphics","Art Direction","Community Management"],background:"Maitiri Kakao is a ceremonial cacao brand rooted in ritual, warmth and intention. They make a product people drink slowly — but their social presence felt rushed and inconsistent. They wanted a feed that carried the same calm, grounded warmth as the cacao itself, and a system they could keep running after I stepped away.",challenge:{intro:"The brief was less about a single launch and more about building a living, breathing voice on social — in just two months:",items:["Finding a visual rhythm that felt ceremonial, not commercial","Producing enough content to stay consistent without burning out","Translating a slow, sensory product into scroll-stopping graphics","Handing over a system the team could maintain themselves"]},approach:[{group:"Strategy & rhythm",items:["Content pillars rooted in ritual, sourcing and community","Posting cadence & weekly themes","Tone of voice tuned to warmth over hype"]},{group:"Content creation",items:["Recurring graphic templates for quotes and rituals","Product and lifestyle art direction","Short-form motion and carousels","Caption writing in the brand voice"]},{group:"Brand graphics",items:["Earthy palette and textured backgrounds","Custom type treatments and marks","A reusable asset kit for the team"]},{group:"Handover",items:["Editable templates and usage notes","A simple monthly content plan","Light coaching on keeping the look consistent"]}],result:{intro:"A social presence that finally looked the way the cacao tastes — warm, slow and intentional — and a system the team could run on their own.",outcomes:["A consistent, recognisable visual language","Higher engagement and saves across posts","A reusable template kit handed to the team","A calmer, more confident posting routine"],closing:"Two months of focused, hands-on work left Maitiri with more than nice graphics — it left them with a way of showing up that feels true to the ritual at the heart of the brand."}},
+    joetrenk:{id:"joetrenk",title:"Joe Trenk / Leben Lehrt",tagline:"A life coach's voice, online — built twice, loved both times.",year:"2023",client:"Joe Trenk · Leben Lehrt",tone:"portrait",tags:["Web Design","Brand"],services:["Web Design","Webflow Development","Brand Refinement","Copy Direction"],background:"Joe Trenk is a German life coach whose work is deeply personal — it lives in conversation, presence and trust. His website needed to carry that warmth before a single word was read, and to make booking a session feel like an easy, human next step rather than a transaction.",challenge:{intro:"Coaching is intimate, and a website can easily feel cold. The challenge was to keep it personal at every turn:",items:["Putting Joe's personality and presence front and centre","Making the offer clear without sounding like a sales page","Guiding visitors gently toward booking a first conversation","Building something flexible enough to grow with his practice"]},approach:[{group:"Brand refinement",items:["Sharpening the positioning and voice","A warmer, more human visual direction","Photography direction centred on Joe"]},{group:"Structure & copy",items:["A story-led page flow","Copy direction that sounds like Joe, not a brochure","Clear, low-pressure calls to action"]},{group:"Design & build",items:["Custom Webflow build","Responsive, calm layouts","Subtle motion that supports the story"]},{group:"The second build",items:["A full rework as the practice evolved","Refined structure and updated visuals","Carried over everything that worked the first time"]}],result:{intro:"A website that feels like Joe — warm, grounded and direct — and turns quiet interest into booked conversations.",outcomes:["A personal, trustworthy first impression","A clear path from visitor to booked session","A site we built twice, better each time","A platform that grows with the practice"],closing:"Built twice, loved both times — the second version kept the soul of the first and gave Joe a home online that genuinely sounds like him."}},
+    neuweiss:{id:"neuweiss",title:"neuweiss",tagline:"A modern identity for interiors & real estate.",year:"2024",client:"neuweiss",tone:"architectural",tags:["Brand Identity"],services:["Brand Identity","Logo & Wordmark","Visual System","Brand Guidelines"],background:"neuweiss is a modern interior and real estate brand built on clean lines, light and considered space. They needed an identity as composed as the rooms they create — quiet, confident and unmistakably modern, with enough flexibility to work across signage, print and screen.",challenge:{intro:"Real estate branding tends to look the same. The challenge was to feel distinctly modern without chasing trends:",items:["Designing a wordmark that feels architectural, not decorative","Building a system restrained enough to stay timeless","Working across print, signage and digital from day one","Giving the team clear rules to keep it consistent"]},approach:[{group:"Discovery",items:["Positioning and audience workshops","Mood and reference direction","Competitive landscape review"]},{group:"Identity design",items:["Wordmark and monogram exploration","A precise, modern type system","A restrained, light-led palette"]},{group:"Visual system",items:["Layout grids and spacing rules","Photography and art-direction guidance","Application across key touchpoints"]},{group:"Guidelines",items:["A clear, usable brand book","Logo, colour and type rules","Do's and don'ts for the team"]}],result:{intro:"A calm, architectural identity that gives neuweiss a confident, modern presence across every surface it lives on.",outcomes:["A distinctive, timeless wordmark","A flexible system spanning print and digital","Clear guidelines for consistent use","An identity as composed as the spaces it represents"],closing:"The result is quiet on purpose — a brand that lets the architecture speak, while staying instantly recognisable as neuweiss."}}
+  };
+}
+
+/* ════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════ */
+function showSection(id) {
+  // collect current section before switching
+  collectSection(currentSection);
+  currentSection = id;
+
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.section === id));
+  document.getElementById('topbar-title').textContent = SECTION_TITLES[id] || id;
+  renderSection(id);
+}
+
+/* ════════════════════════════════════════════════════════
+   RENDER SECTIONS
+════════════════════════════════════════════════════════ */
+function renderSection(id) {
+  const el = document.getElementById('content-area');
+  switch(id) {
+    case 'images':        el.innerHTML = renderImages(); bindImageSection(); break;
+    case 'profile':       el.innerHTML = renderProfile(); break;
+    case 'skills':        el.innerHTML = renderSkills(); break;
+    case 'clients':       el.innerHTML = renderClients(); break;
+    case 'testimonials':  el.innerHTML = renderTestimonials(); break;
+    case 'work-cards':    el.innerHTML = renderWorkCards(); break;
+    case 'cases':         el.innerHTML = renderCases(); activateCaseTab(Object.keys(data.cases||{})[0]); break;
+    case 'contact':       el.innerHTML = renderContact(); break;
+    case 'footer':        el.innerHTML = renderFooter(); break;
+    case 'import-export': el.innerHTML = renderImportExport(); bindImportExport(); break;
+  }
+  bindTagInputs();
+}
+
+/* ── Profile ── */
+function renderProfile() {
+  const b = data.info.bio;
+  return `
+  <div class="section">
+    <div class="section-title">Bio</div>
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Bio — English</label>
+        <textarea class="tall" id="bio-en">${esc(b.EN)}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Bio — German</label>
+        <textarea class="tall" id="bio-de">${esc(b.DE)}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Availability status</div>
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Status line (shown on Info page)</label>
+        <input type="text" id="status-line" value="${esc(data.statusLine || 'Available for projects · 2026')}" />
+        <div class="hint">Shown next to the spark glyph on the Info page.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Navigation labels</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Info — EN</label>
+          <input type="text" id="nav-info-en" value="${esc(data.nav.EN.info)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Info — DE</label>
+          <input type="text" id="nav-info-de" value="${esc(data.nav.DE.info)}" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Work — EN</label>
+          <input type="text" id="nav-work-en" value="${esc(data.nav.EN.work)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Work — DE</label>
+          <input type="text" id="nav-work-de" value="${esc(data.nav.DE.work)}" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Contact — EN</label>
+          <input type="text" id="nav-contact-en" value="${esc(data.nav.EN.contact)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Contact — DE</label>
+          <input type="text" id="nav-contact-de" value="${esc(data.nav.DE.contact)}" />
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Skills ── */
+function renderSkills() {
+  const skills = data.info.skills;
+  return `
+  <div class="section">
+    <div class="section-title">Skill tags</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--ink-2);margin:0 0 14px">Type a skill and press <strong>Enter</strong> or <strong>Tab</strong> to add it. Click × to remove.</p>
+      <div class="field">
+        <label class="field-label">Skills</label>
+        <div class="tags-input" id="skills-tag-input" data-tags='${JSON.stringify(skills)}'>
+          ${skills.map(s => tagChip(s)).join('')}
+          <input type="text" placeholder="Add skill…" onkeydown="tagKeydown(event,'skills-tag-input')" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Featured projects on Info page</div>
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Select which cases to feature (shown on Info tab)</label>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px" id="featured-checkboxes">
+          ${Object.values(data.cases||{}).map(c => {
+            const checked = (data.info.featured||[]).includes(c.id) ? 'checked' : '';
+            return `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+              <input type="checkbox" id="feat-cb-${esc(c.id)}" value="${esc(c.id)}" ${checked} style="width:16px;height:16px;accent-color:var(--accent)" onchange="updateFeatured()" />
+              ${esc(c.title)} <span style="font-size:11px;color:var(--ink-3)">(${esc(c.id)})</span>
+            </label>`;
+          }).join('')}
+        </div>
+        <div class="hint" style="margin-top:10px">Checked cases appear as featured cards on the Info page.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Clients ── */
+function renderClients() {
+  const logos = data.info.clientLogos || [];
+  const rows = logos.map((l, i) => `
+    <div class="logo-row" id="logo-row-${i}">
+      <input type="text" placeholder="Name" value="${esc(l.name)}" onchange="updateLogo(${i},'name',this.value)" />
+      <input type="url" placeholder="SVG URL" value="${esc(l.src)}" onchange="updateLogo(${i},'src',this.value)" />
+      <button class="btn-icon" onclick="removeLogo(${i})" title="Remove">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+
+  return `
+  <div class="section">
+    <div class="section-title">Client logo strip</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--ink-2);margin:0 0 16px">These logos scroll in the marquee on the Info page. Use SVG URLs for best quality.</p>
+      ${rows}
+      <button class="btn-add" onclick="addLogo()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add logo
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ── Testimonials ── */
+function renderTestimonials() {
+  const t = data.info.testimonials || [];
+  const items = t.map((item, i) => `
+    <div class="list-item" id="testimonial-${i}">
+      <div class="list-item-head">
+        <span class="list-item-label">${esc(item.name) || 'Testimonial ' + (i+1)}</span>
+        <div class="list-item-actions">
+          <button class="btn-icon" onclick="moveTestimonial(${i},-1)" title="Move up" ${i===0?'disabled':''}>↑</button>
+          <button class="btn-icon" onclick="moveTestimonial(${i},1)" title="Move down" ${i===t.length-1?'disabled':''}>↓</button>
+          <button class="btn-icon" onclick="removeTestimonial(${i})" title="Remove">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Name</label>
+          <input type="text" value="${esc(item.name)}" onchange="updateTestimonial(${i},'name',this.value)" />
+        </div>
+        <div class="field">
+          <label class="field-label">Role / Company</label>
+          <input type="text" value="${esc(item.role)}" onchange="updateTestimonial(${i},'role',this.value)" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Quote — English</label>
+        <textarea onchange="updateTestimonial(${i},'quoteEN',this.value)">${esc(item.quote.EN)}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Quote — German</label>
+        <textarea onchange="updateTestimonial(${i},'quoteDE',this.value)">${esc(item.quote.DE)}</textarea>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="section">
+    <div class="section-title">Kind words</div>
+    ${items}
+    <button class="btn-add" onclick="addTestimonial()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add testimonial
+    </button>
+  </div>`;
+}
+
+/* ── Work cards ── */
+function renderWorkCards() {
+  const cases = data.work.cases || [];
+  const toneOpts = ['moody','earthy','portrait','architectural'].map(t => `<option value="${t}">`).join('');
+  const items = cases.map((c, i) => `
+    <div class="list-item">
+      <div class="list-item-head">
+        <span class="list-item-label">${esc(c.title)}</span>
+        <div class="list-item-actions">
+          <button class="btn-icon" onclick="moveWorkCase(${i},-1)" ${i===0?'disabled':''}>↑</button>
+          <button class="btn-icon" onclick="moveWorkCase(${i},1)" ${i===cases.length-1?'disabled':''}>↓</button>
+          <button class="btn-icon" onclick="deleteWorkCard(${i})" title="Delete card" style="color:var(--danger)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">ID (slug for URL)</label>
+          <input type="text" value="${esc(c.id)}" onchange="updateWorkCase(${i},'id',this.value)" />
+        </div>
+        <div class="field">
+          <label class="field-label">Year</label>
+          <input type="text" value="${esc(c.year)}" onchange="updateWorkCase(${i},'year',this.value)" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Title</label>
+          <input type="text" value="${esc(c.title)}" onchange="updateWorkCase(${i},'title',this.value)" />
+        </div>
+        <div class="field">
+          <label class="field-label">Thumbnail tone</label>
+          <datalist id="tones">${toneOpts}</datalist>
+          <input type="text" list="tones" value="${esc(c.tone)}" onchange="updateWorkCase(${i},'tone',this.value)" placeholder="moody / earthy / portrait / architectural" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Tags</label>
+        <div class="tags-input" id="wc-tags-${i}" data-tags='${JSON.stringify(c.tags||[])}'>
+          ${(c.tags||[]).map(t=>tagChip(t)).join('')}
+          <input type="text" placeholder="Add tag…" onkeydown="tagKeydown(event,'wc-tags-${i}')" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Description — English</label>
+        <textarea onchange="updateWorkCase(${i},'descEN',this.value)">${esc(c.desc.EN)}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Description — German</label>
+        <textarea onchange="updateWorkCase(${i},'descDE',this.value)">${esc(c.desc.DE)}</textarea>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="section">
+    <div class="section-title">Work panel cards</div>
+    ${items}
+    <button class="btn-add" onclick="addWorkCard()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add new case / project
+    </button>
+  </div>
+  <div class="section">
+    <div class="section-title">NDA note</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Note — English</label>
+          <textarea id="nda-note-en">${esc(data.work.note.EN)}</textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">Note — German</label>
+          <textarea id="nda-note-de">${esc(data.work.note.DE)}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Case studies ── */
+let activeCaseId = null;
+function renderCases() {
+  const ids = Object.keys(data.cases || {});
+  const tabs = ids.map(id => `
+    <span style="display:inline-flex;align-items:center;gap:0">
+      <button class="case-tab" id="casetab-${id}" onclick="activateCaseTab('${id}')">${esc(data.cases[id].title)}</button>
+      <button onclick="deleteCase('${id}')" title="Delete case study" style="margin-left:-8px;padding:4px 6px;border:none;background:transparent;cursor:pointer;color:var(--ink-3);font-size:14px;line-height:1" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--ink-3)'">×</button>
+    </span>`).join('');
+  return `
+  <div class="section">
+    <div class="section-title">Case study pages</div>
+    <div class="case-tabs">${tabs}
+      <button class="case-tab" style="border-style:dashed;color:var(--accent)" onclick="addCase()">+ New case study</button>
+    </div>
+    <div id="case-editor"></div>
+  </div>`;
+}
+
+function activateCaseTab(id) {
+  if (!id) return;
+  activeCaseId = id;
+  document.querySelectorAll('.case-tab').forEach(b => b.classList.toggle('active', b.id === 'casetab-' + id));
+  renderCaseEditor(id);
+}
+
+function renderCaseEditor(id) {
+  const c = data.cases[id];
+  if (!c) return;
+
+  const approachHTML = (c.approach||[]).map((g, gi) => `
+    <div class="approach-group" id="ag-${gi}">
+      <div class="approach-group-head">
+        <input type="text" style="flex:1" value="${esc(g.group)}" placeholder="Group name" onchange="updateApproachGroup('${id}',${gi},'group',this.value)" />
+        <button class="btn-icon" style="margin-left:8px" onclick="removeApproachGroup('${id}',${gi})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      ${(g.items||[]).map((item, ii) => `
+        <div class="bullet-row">
+          <input type="text" value="${esc(item)}" onchange="updateApproachItem('${id}',${gi},${ii},this.value)" />
+          <button class="btn-icon" onclick="removeApproachItem('${id}',${gi},${ii})">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>`).join('')}
+      <button class="btn-add" style="margin-top:6px" onclick="addApproachItem('${id}',${gi})">+ Add bullet</button>
+    </div>`).join('');
+
+  const challengeItemsHTML = (c.challenge.items||[]).map((item, ii) => `
+    <div class="bullet-row">
+      <input type="text" value="${esc(item)}" onchange="updateChallengeItem('${id}',${ii},this.value)" />
+      <button class="btn-icon" onclick="removeChallengeItem('${id}',${ii})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+
+  const outcomesHTML = (c.result.outcomes||[]).map((item, ii) => `
+    <div class="bullet-row">
+      <input type="text" value="${esc(item)}" onchange="updateOutcome('${id}',${ii},this.value)" />
+      <button class="btn-icon" onclick="removeOutcome('${id}',${ii})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+
+  const servicesHTML = (c.services||[]).map((s, si) => `
+    <div class="bullet-row">
+      <input type="text" value="${esc(s)}" onchange="updateService('${id}',${si},this.value)" />
+      <button class="btn-icon" onclick="removeService('${id}',${si})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+
+  document.getElementById('case-editor').innerHTML = `
+    <div class="card">
+      <div class="card-title">Hero & Meta</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Title</label>
+          <input type="text" value="${esc(c.title)}" onchange="updateCase('${id}','title',this.value)" />
+        </div>
+        <div class="field">
+          <label class="field-label">Year</label>
+          <input type="text" value="${esc(c.year)}" onchange="updateCase('${id}','year',this.value)" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Client</label>
+          <input type="text" value="${esc(c.client)}" onchange="updateCase('${id}','client',this.value)" />
+        </div>
+        <div class="field">
+          <label class="field-label">Tone (thumbnail color)</label>
+          <input type="text" list="tones2" value="${esc(c.tone)}" onchange="updateCase('${id}','tone',this.value)" placeholder="moody / earthy / portrait / architectural" />
+          <datalist id="tones2"><option value="moody"><option value="earthy"><option value="portrait"><option value="architectural"></datalist>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Tagline</label>
+        <input type="text" value="${esc(c.tagline)}" onchange="updateCase('${id}','tagline',this.value)" />
+      </div>
+      <div class="field-row" style="margin-top:4px">
+        <div class="field">
+          <label class="field-label">Hero image height (aspect ratio)</label>
+          <select onchange="updateCase('${id}','coverRatio',this.value)">
+            ${[['16 / 9','16 : 9  (wide, default)'],['3 / 2','3 : 2'],['4 / 3','4 : 3'],['1 / 1','1 : 1  (square)'],['2 / 3','2 : 3  (portrait)'],['9 / 16','9 : 16  (tall)']].map(([val,label]) =>
+              `<option value="${val}" ${(c.coverRatio||'16 / 9')===val?'selected':''}>${label}</option>`
+            ).join('')}
+          </select>
+          <div class="hint">Controls how tall the hero image appears on the case study page.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">Gallery images height (aspect ratio)</label>
+          <select onchange="updateCase('${id}','galleryRatio',this.value)">
+            ${[['4 / 5','4 : 5  (portrait, default)'],['1 / 1','1 : 1  (square)'],['3 / 2','3 : 2  (landscape)'],['16 / 9','16 : 9  (wide)'],['2 / 3','2 : 3  (tall)'],['9 / 16','9 : 16  (very tall)']].map(([val,label]) =>
+              `<option value="${val}" ${(c.galleryRatio||'4 / 5')===val?'selected':''}>${label}</option>`
+            ).join('')}
+          </select>
+          <div class="hint">Controls both gallery images equally.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Services</div>
+      ${servicesHTML}
+      <button class="btn-add" onclick="addService('${id}')">+ Add service</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">01 — Background</div>
+      <div class="field">
+        <textarea class="tall" onchange="updateCase('${id}','background',this.value)">${esc(c.background)}</textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">02 — Challenge</div>
+      <div class="field">
+        <label class="field-label">Intro paragraph</label>
+        <textarea onchange="updateCaseChallenge('${id}','intro',this.value)">${esc(c.challenge.intro)}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Challenge bullets</label>
+        ${challengeItemsHTML}
+        <button class="btn-add" style="margin-top:6px" onclick="addChallengeItem('${id}')">+ Add bullet</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">03 — Approach & Process</div>
+      ${approachHTML}
+      <button class="btn-add" style="margin-top:4px" onclick="addApproachGroup('${id}')">+ Add group</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">04 — Result</div>
+      <div class="field">
+        <label class="field-label">Intro</label>
+        <textarea onchange="updateCaseResult('${id}','intro',this.value)">${esc(c.result.intro)}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Key outcomes</label>
+        ${outcomesHTML}
+        <button class="btn-add" style="margin-top:6px" onclick="addOutcome('${id}')">+ Add outcome</button>
+      </div>
+      <div class="field">
+        <label class="field-label">Closing paragraph</label>
+        <textarea onchange="updateCaseResult('${id}','closing',this.value)">${esc(c.result.closing)}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+/* ── Contact ── */
+function renderContact() {
+  const c = data.contact;
+  return `
+  <div class="section">
+    <div class="section-title">Headline & sub</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Headline — English</label>
+          <input type="text" id="contact-headline-en" value="${esc(c.headline.EN)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Headline — German</label>
+          <input type="text" id="contact-headline-de" value="${esc(c.headline.DE)}" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Sub — English</label>
+          <textarea id="contact-sub-en">${esc(c.sub.EN)}</textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">Sub — German</label>
+          <textarea id="contact-sub-de">${esc(c.sub.DE)}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Email & booking</div>
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Email address</label>
+        <input type="email" id="contact-email" value="${esc(c.email)}" />
+      </div>
+      <div class="field">
+        <label class="field-label">Booking URL (cal.com)</label>
+        <input type="url" id="contact-booking-href" value="${esc(c.booking.href)}" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Booking label — English</label>
+          <input type="text" id="contact-booking-label-en" value="${esc(c.booking.label.EN)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Booking label — German</label>
+          <input type="text" id="contact-booking-label-de" value="${esc(c.booking.label.DE)}" />
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Footer ── */
+function renderFooter() {
+  const f = data.footer;
+  return `
+  <div class="section">
+    <div class="section-title">Footer content</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Tagline — English</label>
+          <input type="text" id="footer-tagline-en" value="${esc(f.tagline.EN)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Tagline — German</label>
+          <input type="text" id="footer-tagline-de" value="${esc(f.tagline.DE)}" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Brand / copyright name</label>
+        <input type="text" id="footer-brand" value="${esc(f.brand)}" />
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Footer links</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Instagram handle</label>
+          <input type="text" id="footer-ig-handle" value="${esc(f.instagram.handle)}" />
+        </div>
+        <div class="field">
+          <label class="field-label">Instagram URL</label>
+          <input type="url" id="footer-ig-href" value="${esc(f.instagram.href)}" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Email</label>
+        <input type="email" id="footer-email" value="${esc(f.email.value)}" />
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Import / Export ── */
+function renderImportExport() {
+  return `
+  <div class="section">
+    <div class="section-title">Export</div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-2);margin:0 0 16px">Download your current content as a JSON file. You can re-import it later or back it up.</p>
+      <button class="btn-primary" style="width:auto;display:inline-flex" onclick="exportJSON()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download content.json
+      </button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Import</div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-2);margin:0 0 16px">Import a previously exported JSON file to restore or transfer content.</p>
+      <div class="import-area" id="import-area" onclick="document.getElementById('import-file').click()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p>Click to select a JSON file, or drag and drop here</p>
+      </div>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(this)" />
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Danger zone</div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-2);margin:0 0 16px">Reset all content back to the original defaults. This cannot be undone.</p>
+      <button class="btn-secondary" style="width:auto;display:inline-flex;border-color:#E53935;color:#E53935" onclick="resetToDefaults()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+        Reset to defaults
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════════════
+   COLLECT FORM DATA (read DOM → update data object)
+════════════════════════════════════════════════════════ */
+function collectSection(id) {
+  const g = (sel) => { const el = document.getElementById(sel); return el ? el.value : null; };
+  const tags = (tid) => {
+    const el = document.getElementById(tid);
+    return el ? JSON.parse(el.dataset.tags || '[]') : null;
+  };
+
+  if (id === 'profile') {
+    if (g('bio-en') !== null) data.info.bio.EN = g('bio-en');
+    if (g('bio-de') !== null) data.info.bio.DE = g('bio-de');
+    if (g('status-line') !== null) data.statusLine = g('status-line');
+    if (g('nav-info-en') !== null) { data.nav.EN.info = g('nav-info-en'); data.nav.DE.info = g('nav-info-de'); data.nav.EN.work = g('nav-work-en'); data.nav.DE.work = g('nav-work-de'); data.nav.EN.contact = g('nav-contact-en'); data.nav.DE.contact = g('nav-contact-de'); }
+  }
+  if (id === 'skills') {
+    const s = tags('skills-tag-input'); if (s) data.info.skills = s;
+    const fcb = document.getElementById('featured-checkboxes');
+    if (fcb) data.info.featured = Array.from(fcb.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+  }
+  if (id === 'work-cards') {
+    if (g('nda-note-en') !== null) { data.work.note.EN = g('nda-note-en'); data.work.note.DE = g('nda-note-de'); }
+    data.work.cases.forEach((c, i) => {
+      const t = tags('wc-tags-' + i); if (t) c.tags = t;
+    });
+  }
+  if (id === 'contact') {
+    if (g('contact-headline-en') !== null) {
+      data.contact.headline.EN = g('contact-headline-en');
+      data.contact.headline.DE = g('contact-headline-de');
+      data.contact.sub.EN = g('contact-sub-en');
+      data.contact.sub.DE = g('contact-sub-de');
+      data.contact.email = g('contact-email');
+      data.contact.booking.href = g('contact-booking-href');
+      data.contact.booking.label.EN = g('contact-booking-label-en');
+      data.contact.booking.label.DE = g('contact-booking-label-de');
+    }
+  }
+  if (id === 'footer') {
+    if (g('footer-brand') !== null) {
+      data.footer.tagline.EN = g('footer-tagline-en');
+      data.footer.tagline.DE = g('footer-tagline-de');
+      data.footer.brand = g('footer-brand');
+      data.footer.instagram.handle = g('footer-ig-handle');
+      data.footer.instagram.href = g('footer-ig-href');
+      data.footer.email.value = g('footer-email');
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   MUTATION HELPERS
+════════════════════════════════════════════════════════ */
+function updateLogo(i, key, val) { data.info.clientLogos[i][key] = val; }
+function addLogo() {
+  data.info.clientLogos.push({name:'',src:''});
+  renderSection('clients');
+}
+function removeLogo(i) {
+  data.info.clientLogos.splice(i, 1);
+  renderSection('clients');
+}
+
+function updateTestimonial(i, key, val) {
+  if (key === 'quoteEN') data.info.testimonials[i].quote.EN = val;
+  else if (key === 'quoteDE') data.info.testimonials[i].quote.DE = val;
+  else data.info.testimonials[i][key] = val;
+  document.querySelector(`#testimonial-${i} .list-item-label`).textContent = data.info.testimonials[i].name || 'Testimonial '+(i+1);
+}
+function moveTestimonial(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= data.info.testimonials.length) return;
+  [data.info.testimonials[i], data.info.testimonials[j]] = [data.info.testimonials[j], data.info.testimonials[i]];
+  renderSection('testimonials');
+}
+function removeTestimonial(i) {
+  data.info.testimonials.splice(i, 1);
+  renderSection('testimonials');
+}
+function addTestimonial() {
+  data.info.testimonials.push({name:'',role:'',quote:{EN:'',DE:''}});
+  renderSection('testimonials');
+}
+
+function updateWorkCase(i, key, val) {
+  if (key === 'descEN') data.work.cases[i].desc.EN = val;
+  else if (key === 'descDE') data.work.cases[i].desc.DE = val;
+  else data.work.cases[i][key] = val;
+}
+function moveWorkCase(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= data.work.cases.length) return;
+  [data.work.cases[i], data.work.cases[j]] = [data.work.cases[j], data.work.cases[i]];
+  renderSection('work-cards');
+}
+
+function addWorkCard() {
+  const id = 'case-' + Date.now();
+  data.work.cases.push({ id, title: 'New Project', year: String(new Date().getFullYear()), tags: [], desc: { EN: '', DE: '' }, tone: 'moody' });
+  if (!data.cases) data.cases = {};
+  data.cases[id] = {
+    id, title: 'New Project', tagline: '', year: String(new Date().getFullYear()),
+    client: '', tone: 'moody', tags: [], services: [],
+    background: '',
+    challenge: { intro: '', items: [] },
+    approach: [],
+    result: { intro: '', outcomes: [], closing: '' }
+  };
+  renderSection('work-cards');
+  showToast('New project added — edit it here, then go to Case Studies to fill in the detail page.');
+}
+
+function deleteWorkCard(i) {
+  if (!confirm('Delete this work card? The case study page will also be removed.')) return;
+  const id = data.work.cases[i].id;
+  data.work.cases.splice(i, 1);
+  if (data.cases) delete data.cases[id];
+  data.info.featured = (data.info.featured || []).filter(f => f !== id);
+  renderSection('work-cards');
+  showToast('Work card deleted.');
+}
+
+// Case study mutations
+function updateCase(id, key, val) { if (data.cases[id]) data.cases[id][key] = val; }
+function updateCaseChallenge(id, key, val) { if (data.cases[id]) data.cases[id].challenge[key] = val; }
+function updateCaseResult(id, key, val) { if (data.cases[id]) data.cases[id].result[key] = val; }
+
+function updateChallengeItem(id, ii, val) { data.cases[id].challenge.items[ii] = val; }
+function removeChallengeItem(id, ii) { data.cases[id].challenge.items.splice(ii, 1); renderCaseEditor(id); }
+function addChallengeItem(id) { data.cases[id].challenge.items.push(''); renderCaseEditor(id); }
+
+function updateApproachGroup(id, gi, key, val) { data.cases[id].approach[gi][key] = val; }
+function addApproachGroup(id) { data.cases[id].approach.push({group:'',items:['']}); renderCaseEditor(id); }
+function removeApproachGroup(id, gi) { data.cases[id].approach.splice(gi,1); renderCaseEditor(id); }
+function updateApproachItem(id, gi, ii, val) { data.cases[id].approach[gi].items[ii] = val; }
+function addApproachItem(id, gi) { data.cases[id].approach[gi].items.push(''); renderCaseEditor(id); }
+function removeApproachItem(id, gi, ii) { data.cases[id].approach[gi].items.splice(ii,1); renderCaseEditor(id); }
+
+function updateOutcome(id, ii, val) { data.cases[id].result.outcomes[ii] = val; }
+function addOutcome(id) { data.cases[id].result.outcomes.push(''); renderCaseEditor(id); }
+function removeOutcome(id, ii) { data.cases[id].result.outcomes.splice(ii,1); renderCaseEditor(id); }
+
+function updateService(id, si, val) { data.cases[id].services[si] = val; }
+function addService(id) { data.cases[id].services.push(''); renderCaseEditor(id); }
+function removeService(id, si) { data.cases[id].services.splice(si,1); renderCaseEditor(id); }
+
+function addCase() {
+  const id = 'case-' + Date.now();
+  if (!data.cases) data.cases = {};
+  data.cases[id] = {
+    id, title: 'New Case Study', tagline: '', year: String(new Date().getFullYear()),
+    client: '', tone: 'moody', tags: [], services: [],
+    background: '',
+    challenge: { intro: '', items: [] },
+    approach: [],
+    result: { intro: '', outcomes: [], closing: '' }
+  };
+  // Also add a matching work card if not already there
+  if (!data.work.cases.find(c => c.id === id)) {
+    data.work.cases.push({ id, title: 'New Case Study', year: String(new Date().getFullYear()), tags: [], desc: { EN: '', DE: '' }, tone: 'moody' });
+  }
+  renderSection('cases');
+  activateCaseTab(id);
+  showToast('New case study created. Fill in the details and save.');
+}
+
+function deleteCase(id) {
+  if (!confirm(`Delete the case study "${data.cases[id] ? data.cases[id].title : id}"? This will also remove it from Work Cards.`)) return;
+  if (data.cases) delete data.cases[id];
+  data.work.cases = (data.work.cases || []).filter(c => c.id !== id);
+  data.info.featured = (data.info.featured || []).filter(f => f !== id);
+  activeCaseId = null;
+  renderSection('cases');
+  const remaining = Object.keys(data.cases || {});
+  if (remaining.length) activateCaseTab(remaining[0]);
+  showToast('Case study deleted.');
+}
+
+function updateFeatured() {
+  const fcb = document.getElementById('featured-checkboxes');
+  if (fcb) data.info.featured = Array.from(fcb.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+}
+
+/* ════════════════════════════════════════════════════════
+   TAG INPUT
+════════════════════════════════════════════════════════ */
+function tagChip(value) {
+  return `<span class="tag-chip">${esc(value)}<button type="button" onclick="removeTag(this)" data-val="${esc(value)}">×</button></span>`;
+}
+function tagKeydown(e, containerId) {
+  if (e.key === 'Enter' || e.key === 'Tab') {
+    e.preventDefault();
+    const val = e.target.value.trim();
+    if (!val) return;
+    const container = document.getElementById(containerId);
+    const tags = JSON.parse(container.dataset.tags || '[]');
+    if (!tags.includes(val)) {
+      tags.push(val);
+      container.dataset.tags = JSON.stringify(tags);
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `${esc(val)}<button type="button" onclick="removeTag(this)" data-val="${esc(val)}">×</button>`;
+      container.insertBefore(chip, e.target);
+    }
+    e.target.value = '';
+  }
+}
+function removeTag(btn) {
+  const container = btn.closest('.tags-input');
+  const val = btn.dataset.val;
+  const tags = JSON.parse(container.dataset.tags || '[]').filter(t => t !== val);
+  container.dataset.tags = JSON.stringify(tags);
+  btn.closest('.tag-chip').remove();
+}
+function bindTagInputs() {}
+
+/* ════════════════════════════════════════════════════════
+   SAVE / LOAD
+════════════════════════════════════════════════════════ */
+function saveAll() {
+  collectSection(currentSection);
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    setStatus(true, 'Changes saved');
+    showToast('Saved — reload the portfolio to see changes');
+  } catch(e) {
+    setStatus(false, 'Save failed');
+    showToast('Error saving: ' + e.message);
+  }
+}
+
+function resetToDefaults() {
+  if (!confirm('Reset all content to defaults? This will overwrite your edits.')) return;
+  data = getDefaults();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  renderSection(currentSection);
+  showToast('Reset to defaults');
+}
+
+function setStatus(ok, msg) {
+  document.getElementById('status-dot').style.background = ok ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('status-text').textContent = msg;
+}
+
+/* ════════════════════════════════════════════════════════
+   IMPORT / EXPORT
+════════════════════════════════════════════════════════ */
+function exportJSON() {
+  collectSection(currentSection);
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'content.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.info && !imported.work && !imported.contact) throw new Error('Unrecognised format');
+      data = imported;
+      if (!data.cases) data.cases = getDefaultCases();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      renderSection(currentSection);
+      showToast('Imported successfully');
+    } catch(err) {
+      showToast('Import failed: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function bindImportExport() {
+  const area = document.getElementById('import-area');
+  if (!area) return;
+  area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag-over'); });
+  area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
+  area.addEventListener('drop', e => {
+    e.preventDefault(); area.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (!f) return;
+    const fakeInput = {files:[f]};
+    importJSON(fakeInput);
+  });
+}
+
+/* ════════════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════════════ */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), 2500);
+}
+
+/* ════════════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════════════ */
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════════════════════════════════════════════════
+   IMAGES
+════════════════════════════════════════════════════════ */
+
+// Computed dynamically from data.cases so new cases automatically get slots
+function getImageSlots() {
+  const groups = [
+    { group: 'Profile', slots: [
+      { id: 'leon-portrait', label: 'Portrait', ratio: 'portrait', hint: 'B&W portrait — 2:3' },
+    ]},
+    { group: 'Info — Featured cards', slots:
+      Object.values(data.cases || {}).map(c => ({
+        id: 'feat-' + c.id, label: c.title, ratio: 'portrait', hint: 'Featured thumbnail',
+      }))
+    },
+    { group: 'Work cards', slots:
+      (data.work.cases || []).map(c => ({
+        id: 'work-' + c.id, label: c.title, ratio: '', hint: 'Work card thumbnail',
+      }))
+    },
+  ];
+  // One group per case study
+  for (const c of Object.values(data.cases || {})) {
+    groups.push({ group: 'Case study — ' + c.title, slots: [
+      { id: c.id + '-cover',     label: 'Hero',      ratio: 'wide', hint: '16:9 hero image' },
+      { id: c.id + '-gallery-1', label: 'Gallery 1', ratio: 'tall', hint: '4:5 gallery image' },
+      { id: c.id + '-gallery-2', label: 'Gallery 2', ratio: 'tall', hint: '4:5 gallery image' },
+    ]});
+  }
+  return groups;
+}
+
+const LS_IMG_KEY = 'leon_image_slots';
+
+function loadImageSlots() {
+  try {
+    const raw = localStorage.getItem(LS_IMG_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function saveImageSlot(id, dataUrl) {
+  const slots = loadImageSlots();
+  slots[id] = { u: dataUrl, s: 1, x: 0, y: 0 };
+  localStorage.setItem(LS_IMG_KEY, JSON.stringify(slots));
+}
+
+function clearImageSlot(id) {
+  const slots = loadImageSlots();
+  delete slots[id];
+  localStorage.setItem(LS_IMG_KEY, JSON.stringify(slots));
+  refreshImageCard(id);
+  showToast('Image removed');
+}
+
+function refreshImageCard(id) {
+  const slots = loadImageSlots();
+  const entry = slots[id];
+  const url = entry && entry.u ? entry.u : (entry && typeof entry === 'string' ? entry : null);
+  const container = document.querySelector(`[data-slot-id="${id}"]`);
+  if (!container) return;
+  const ratioClass = container.dataset.ratio || '';
+  if (url) {
+    container.innerHTML = `
+      <img class="img-preview ${ratioClass}" src="${url}" alt="" />
+      <div class="img-card-footer">
+        <div>
+          <div class="img-card-label">${esc(container.dataset.label)}</div>
+          <div class="img-card-sub">${esc(container.dataset.hint)}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-icon" title="Replace image" onclick="triggerUpload('${id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </button>
+          <button class="btn-icon" title="Remove image" onclick="clearImageSlot('${id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>`;
+  } else {
+    container.innerHTML = `
+      <div class="img-placeholder ${ratioClass}" onclick="triggerUpload('${id}')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        <span>Click or drop image</span>
+      </div>
+      <div class="img-card-footer">
+        <div>
+          <div class="img-card-label">${esc(container.dataset.label)}</div>
+          <div class="img-card-sub">${esc(container.dataset.hint)}</div>
+        </div>
+      </div>`;
+  }
+}
+
+function renderImages() {
+  const slots = loadImageSlots();
+  let html = '';
+  for (const group of getImageSlots()) {
+    html += `<div class="section"><div class="section-title">${esc(group.group)}</div><div class="img-grid">`;
+    for (const s of group.slots) {
+      const entry = slots[s.id];
+      const url = entry && entry.u ? entry.u : (entry && typeof entry === 'string' ? entry : null);
+      const ratioClass = s.ratio || '';
+      html += `<div class="img-card" data-slot-id="${esc(s.id)}" data-label="${esc(s.label)}" data-hint="${esc(s.hint)}" data-ratio="${esc(s.ratio)}">`;
+      if (url) {
+        html += `
+          <img class="img-preview ${ratioClass}" src="${url}" alt="" />
+          <div class="img-card-footer">
+            <div>
+              <div class="img-card-label">${esc(s.label)}</div>
+              <div class="img-card-sub">${esc(s.hint)}</div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn-icon" title="Replace image" onclick="triggerUpload('${esc(s.id)}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+              <button class="btn-icon" title="Remove image" onclick="clearImageSlot('${esc(s.id)}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+              </button>
+            </div>
+          </div>`;
+      } else {
+        html += `
+          <div class="img-placeholder ${ratioClass}" onclick="triggerUpload('${esc(s.id)}')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Click or drop image</span>
+          </div>
+          <div class="img-card-footer">
+            <div>
+              <div class="img-card-label">${esc(s.label)}</div>
+              <div class="img-card-sub">${esc(s.hint)}</div>
+            </div>
+          </div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+  // Hidden file input
+  html += `<input type="file" id="img-file-input" accept="image/png,image/jpeg,image/webp,image/avif" style="display:none" onchange="handleImageFile(this)" />`;
+  return html;
+}
+
+let _uploadTargetId = null;
+
+function triggerUpload(slotId) {
+  _uploadTargetId = slotId;
+  document.getElementById('img-file-input').click();
+}
+
+function handleImageFile(input) {
+  const file = input.files[0];
+  if (!file || !_uploadTargetId) return;
+  input.value = '';
+  const id = _uploadTargetId;
+  _uploadTargetId = null;
+  resizeAndStore(file, id);
+}
+
+function resizeAndStore(file, id) {
+  const MAX = 1400;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/webp', 0.88);
+      saveImageSlot(id, dataUrl);
+      refreshImageCard(id);
+      showToast('Image saved — reload the portfolio to see it');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function bindImageSection() {
+  // Enable drag-and-drop onto each image card
+  document.querySelectorAll('.img-card').forEach(card => {
+    card.addEventListener('dragover', e => { e.preventDefault(); card.style.outline = '2px dashed var(--accent)'; });
+    card.addEventListener('dragleave', () => { card.style.outline = ''; });
+    card.addEventListener('drop', e => {
+      e.preventDefault(); card.style.outline = '';
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      resizeAndStore(file, card.dataset.slotId);
+    });
+  });
+}
+
+/* Auto-save every 30s */
+setInterval(() => { collectSection(currentSection); localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); setStatus(true,'Auto-saved'); }, 30000);
+
+/* Init */
+renderSection('profile');
+</script>
+</body>
+</html>
