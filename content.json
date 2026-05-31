@@ -373,16 +373,16 @@
   },
   "statusLine": "Available for projects · 2026",
   "images": {
-    "leon-portrait": "images/leon-portrait.webp",
-    "feat-oakstone": "images/feat-oakstone.webp",
-    "work-oakstone": "images/work-oakstone.webp",
-    "work-joetrenk": "images/work-joetrenk.webp",
-    "feat-joetrenk": "images/feat-joetrenk.webp",
-    "oakstone-gallery-1": "images/oakstone-gallery-1.webp",
-    "oakstone-gallery-2": "images/oakstone-gallery-2.webp",
-    "oakstone-cover": "images/oakstone-cover.webp",
-    "joetrenk-gallery-1": "images/joetrenk-gallery-1.webp",
-    "joetrenk-gallery-2": "images/joetrenk-gallery-2.webp",
-    "joetrenk-cover": "images/joetrenk-cover.webp"
+    "leon-portrait": "/images/leon-portrait.webp",
+    "feat-oakstone": "/images/feat-oakstone.webp",
+    "work-oakstone": "/images/work-oakstone.webp",
+    "work-joetrenk": "/images/work-joetrenk.webp",
+    "feat-joetrenk": "/images/feat-joetrenk.webp",
+    "oakstone-gallery-1": "/images/oakstone-gallery-1.webp",
+    "oakstone-gallery-2": "/images/oakstone-gallery-2.webp",
+    "oakstone-cover": "/images/oakstone-cover.webp",
+    "joetrenk-gallery-1": "/images/joetrenk-gallery-1.webp",
+    "joetrenk-gallery-2": "/images/joetrenk-gallery-2.webp",
+    "joetrenk-cover": "/images/joetrenk-cover.webp"
   }
 }
