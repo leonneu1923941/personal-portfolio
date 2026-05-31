@@ -95,10 +95,8 @@
 
   function fetchContentJson() {
     try {
-      const inCases = location.pathname.includes('/cases/');
-      const jsonPath = inCases ? '../content.json' : 'content.json';
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', jsonPath, false); // synchronous
+      xhr.open('GET', '/content.json', false); // synchronous, absolute path works from any depth
       xhr.send();
       if (xhr.status === 200) return JSON.parse(xhr.responseText);
     } catch (e) {}
@@ -106,7 +104,6 @@
   }
 
   function loadContent() {
-    // Always fetch content.json from server (needed for image paths on GitHub Pages)
     const serverData = fetchContentJson();
 
     // localStorage has priority for text content (CMS edits)
@@ -121,17 +118,7 @@
 
     // Always use images from content.json — localStorage never stores these
     if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
-      const inCases = location.pathname.includes('/cases/');
-      if (inCases) {
-        const adjusted = {};
-        for (const [k, v] of Object.entries(serverData.images)) {
-          adjusted[k] = (typeof v === 'string' && !v.startsWith('http') && !v.startsWith('/'))
-            ? '../' + v : v;
-        }
-        result.images = adjusted;
-      } else {
-        result.images = serverData.images;
-      }
+      result.images = serverData.images;
     }
 
     return result;
