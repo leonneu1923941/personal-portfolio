@@ -92,14 +92,8 @@
   };
 
   /* ---------- load from localStorage → content.json → hardcoded defaults ---------- */
-  function loadContent() {
-    // 1. localStorage (CMS edits take priority)
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
 
-    // 2. content.json sitting in the repo (works on GitHub Pages)
+  function fetchContentJson() {
     try {
       const inCases = location.pathname.includes('/cases/');
       const jsonPath = inCases ? '../content.json' : 'content.json';
@@ -108,9 +102,29 @@
       xhr.send();
       if (xhr.status === 200) return JSON.parse(xhr.responseText);
     } catch (e) {}
+    return null;
+  }
 
-    // 3. Hardcoded fallback
-    return DEFAULT_CONTENT;
+  function loadContent() {
+    // Always fetch content.json from server (needed for image paths on GitHub Pages)
+    const serverData = fetchContentJson();
+
+    // localStorage has priority for text content (CMS edits)
+    let result = DEFAULT_CONTENT;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) result = JSON.parse(raw);
+      else if (serverData) result = serverData;
+    } catch (e) {
+      if (serverData) result = serverData;
+    }
+
+    // Always use images from content.json — localStorage never stores these
+    if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
+      result.images = serverData.images;
+    }
+
+    return result;
   }
 
   const CONTENT = loadContent();
