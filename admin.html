@@ -1067,7 +1067,31 @@ function renderFooter() {
 function renderImportExport() {
   return `
   <div class="section">
-    <div class="section-title">Export</div>
+    <div class="section-title">Deploy to GitHub Pages</div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-2);margin:0 0 16px">Follow these steps once to make your images and content appear on the live site:</p>
+      <ol style="font-size:13px;color:var(--ink-2);margin:0 0 20px;padding-left:20px;line-height:2">
+        <li>Upload all images here in the <strong>Images</strong> section</li>
+        <li>Click <strong>„Download all images"</strong> below</li>
+        <li>Save all downloaded <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">.webp</code> files into an <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">images/</code> folder in your project</li>
+        <li>Click <strong>„Download content.json"</strong> below</li>
+        <li>Push the <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">images/</code> folder + all project files to GitHub</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-primary" style="width:auto;display:inline-flex" onclick="downloadAllImages()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download all images
+        </button>
+        <button class="btn-secondary" style="width:auto;display:inline-flex" onclick="exportJSON()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download content.json
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Export (content only)</div>
     <div class="card">
       <p style="font-size:14px;color:var(--ink-2);margin:0 0 16px">Download your current content as a JSON file. You can re-import it later or back it up.</p>
       <button class="btn-primary" style="width:auto;display:inline-flex" onclick="exportJSON()">
@@ -1459,14 +1483,50 @@ function saveImageSlot(id, dataUrl) {
   const slots = loadImageSlots();
   slots[id] = { u: dataUrl, s: 1, x: 0, y: 0 };
   localStorage.setItem(LS_IMG_KEY, JSON.stringify(slots));
+  // Also register the file path in content data so it travels with content.json
+  if (!data.images) data.images = {};
+  data.images[id] = 'images/' + id + '.webp';
 }
 
 function clearImageSlot(id) {
   const slots = loadImageSlots();
   delete slots[id];
   localStorage.setItem(LS_IMG_KEY, JSON.stringify(slots));
+  // Remove from content images map too
+  if (data.images) delete data.images[id];
   refreshImageCard(id);
   showToast('Image removed');
+}
+
+function downloadImageFile(id) {
+  const slots = loadImageSlots();
+  const entry = slots[id];
+  const url = entry && entry.u ? entry.u : (typeof entry === 'string' ? entry : null);
+  if (!url) { showToast('No image uploaded yet for this slot.'); return; }
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = id + '.webp';
+  a.click();
+}
+
+function downloadAllImages() {
+  const slots = loadImageSlots();
+  const ids = Object.keys(slots);
+  if (!ids.length) { showToast('No images uploaded yet.'); return; }
+  let count = 0;
+  ids.forEach((id, i) => {
+    const entry = slots[id];
+    const url = entry && entry.u ? entry.u : (typeof entry === 'string' ? entry : null);
+    if (!url) return;
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = id + '.webp';
+      a.click();
+      count++;
+    }, i * 200); // slight delay so browser doesn't block multiple downloads
+  });
+  showToast('Downloading ' + ids.length + ' images — save them all into your images/ folder.');
 }
 
 function refreshImageCard(id) {
@@ -1527,6 +1587,9 @@ function renderImages() {
               <div class="img-card-sub">${esc(s.hint)}</div>
             </div>
             <div style="display:flex;gap:6px">
+              <button class="btn-icon" title="Download file (save to images/ folder)" onclick="downloadImageFile('${esc(s.id)}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
               <button class="btn-icon" title="Replace image" onclick="triggerUpload('${esc(s.id)}')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </button>
