@@ -121,7 +121,17 @@
 
     // Always use images from content.json — localStorage never stores these
     if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
-      result.images = serverData.images;
+      const inCases = location.pathname.includes('/cases/');
+      if (inCases) {
+        const adjusted = {};
+        for (const [k, v] of Object.entries(serverData.images)) {
+          adjusted[k] = (typeof v === 'string' && !v.startsWith('http') && !v.startsWith('/'))
+            ? '../' + v : v;
+        }
+        result.images = adjusted;
+      } else {
+        result.images = serverData.images;
+      }
     }
 
     return result;
