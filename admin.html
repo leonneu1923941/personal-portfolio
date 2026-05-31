@@ -1675,6 +1675,15 @@ function bindImageSection() {
 /* Auto-save every 30s */
 setInterval(() => { collectSection(currentSection); localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); setStatus(true,'Auto-saved'); }, 30000);
 
+/* Sync image paths: any image already in localStorage gets its path registered in data.images */
+(function syncImagePaths() {
+  const slots = loadImageSlots();
+  if (!data.images) data.images = {};
+  for (const id of Object.keys(slots)) {
+    if (!data.images[id]) data.images[id] = 'images/' + id + '.webp';
+  }
+})();
+
 /* Init */
 renderSection('profile');
 </script>
