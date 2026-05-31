@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__webflow_guide_tool",
+      "Bash(grep -o 'class=\"[^\"]*\"' \"/tmp/portfolio-design/leon-neuh-user-personal-portfolio/project/Leon Neuhäuser - Portfolio.html\" | sort -u | head -60)",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__data_sites_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__data_pages_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__data_cms_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__variable_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__de_page_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__style_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__element_tool",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__whtml_builder",
+      "mcp__f7cd390a-d95b-4cd0-9cbd-e3b165c261dd__element_snapshot_tool",
+      "Bash(cp webfetch-1780053835657-snx0fc.bin portfolio.html.gz)",
+      "Bash(gunzip -f portfolio.html.gz)",
+      "Bash(xxd)",
+      "Bash(tar -xf portfolio.html)",
+      "Bash(mkdir -p \"/Users/leonneuhaeuser/Library/CloudStorage/GoogleDrive-thesomahome@gmail.com/Meine Ablage/SOMA HOME LLC/Projekte/Leon's Personal Portfolio/.claude\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx --version)",
+      "Bash(gh api *)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
