@@ -36,6 +36,7 @@ function PhotoSlot() {
         fit="contain"
         position="50% 0%"
         placeholder="Drop B&W portrait"
+        src={CONTENT.images && CONTENT.images["leon-portrait"] || ""}
         style={{ width: "100%", height: "100%", display: "block" }}
       ></image-slot>
     </div>
@@ -50,6 +51,7 @@ function FeaturedCard({ data, lang }) {
           <image-slot
             id={`feat-${data.id}`} shape="rounded" radius="16" fit="cover"
             placeholder={data.title}
+            src={CONTENT.images && CONTENT.images[`feat-${data.id}`] || ""}
             style={{ width: "100%", height: "100%", minHeight: "104px", display: "block" }}
           ></image-slot>
         </div>

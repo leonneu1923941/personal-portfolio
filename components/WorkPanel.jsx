@@ -44,6 +44,7 @@ function CaseCard({ data, lang, no }) {
             radius="16"
             fit="cover"
             placeholder={`Drop ${data.title} cover`}
+            src={CONTENT.images && CONTENT.images[`work-${data.id}`] || ""}
             style={{ width: "100%", height: "100%", minHeight: "150px", display: "block" }}
           ></image-slot>
         </div>
