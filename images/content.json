@@ -1,0 +1,375 @@
+{
+  "brand": {
+    "handle": "@leon",
+    "domain": "amezen-artworks.com"
+  },
+  "nav": {
+    "EN": {
+      "info": "Info",
+      "work": "Work",
+      "contact": "Contact"
+    },
+    "DE": {
+      "info": "Info",
+      "work": "Arbeit",
+      "contact": "Kontakt"
+    }
+  },
+  "info": {
+    "bio": {
+      "EN": "A Germany-born, world-roaming Senior Art Director & Brand Designer with 9+ years of experience. I bring visions to life – with soul, strategy and presence.",
+      "DE": "Ein in Deutschland geborener, weltweit tätiger Senior Art Director und Brand Designer mit über 9 Jahren Erfahrung. Ich erwecke Visionen zum Leben – mit Herzblut, Strategie und Präsenz."
+    },
+    "skills": [
+      "Brand Identity",
+      "Web Design",
+      "Art Direction",
+      "Brand Strategy",
+      "Coaching",
+      "Webflow",
+      "Adobe CC"
+    ],
+    "clients": [
+      "Ottokar",
+      "Maitiri Kakao",
+      "Joe Trenk",
+      "Caretable",
+      "neuweiss",
+      "Oakstone Hills"
+    ],
+    "clientLogos": [
+      {
+        "name": "Maitiri Kakao",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/69204b4a338d8b59f4724296_Maitiri.svg"
+      },
+      {
+        "name": "Ottokar",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcc5580636dddc01f62c2_Ottokar_Logo.svg"
+      },
+      {
+        "name": "Coco",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcc55464ab03718fc55b5_Coco_Logo.svg"
+      },
+      {
+        "name": "Joe Trenk",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/691258c468928df48c5617c8_Joe-Trenk-fullname_vector.svg"
+      },
+      {
+        "name": "Caretable",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/690fcd715e4ecda9ee76fb6e_Caretable_Logo.svg"
+      },
+      {
+        "name": "neuweiss",
+        "src": "https://cdn.prod.website-files.com/6907c8b3016fe09d35b2c028/691f810fc31be0cf8f322949_neuweiss.svg"
+      }
+    ],
+    "featured": [
+      "oakstone"
+    ],
+    "testimonials": [
+      {
+        "name": "Jean N.",
+        "role": "Founder, Ottokar",
+        "quote": {
+          "EN": "Working with Leon was very pleasant and fun! I really love how flexible and creative he helped me with our project. I highly appreciate working on eye-level with him. I felt understood and seen throughout the whole project. Happy to work with you again!",
+          "DE": "Die Zusammenarbeit mit Leon war sehr angenehm und hat Spaß gemacht! Ich finde es toll, wie flexibel und kreativ er mich bei unserem Projekt unterstützt hat. Ich schätze es sehr, dass wir uns auf Augenhöhe begegnen. Ich habe mich während des gesamten Projekts verstanden und wahrgenommen gefühlt. Ich freue mich auf die nächste Zusammenarbeit mit dir!"
+        }
+      },
+      {
+        "name": "Joe T.",
+        "role": "Founder, Leben Lehrt",
+        "quote": {
+          "EN": "I’ve worked with Leon twice, simply because the results from our first project were outstanding. He exceeded my expectations both times, translating my ideas into websites I genuinely love. Efficient, knowledgeable, solution-oriented... I can wholeheartedly recommend collaborating with him.",
+          "DE": "Ich habe bereits zweimal mit Leon zusammengearbeitet, ganz einfach weil die Ergebnisse unseres ersten Projekts hervorragend waren. Er hat meine Erwartungen beide Male übertroffen und meine Ideen in Websites umgesetzt, die mir wirklich sehr gut gefallen. Effizient, kompetent, lösungsorientiert … Ich kann eine Zusammenarbeit mit ihm wärmstens empfehlen."
+        }
+      },
+      {
+        "name": "Justine S.",
+        "role": "Maitiri Kakao",
+        "quote": {
+          "EN": "Leon managed our Instagram channel for two months, bringing it to life with beautiful graphics, his own ideas, and a great sense of thinking outside the box.\nHe worked independently, took responsibility, and took a huge load off our shoulders.We are grateful and thrilled! Leon comes highly recommended from the bottom of our hearts.",
+          "DE": "Leon hat unseren Instagram-Kanal zwei Monate lang betreut und ihn mit wunderschönen Grafiken, eigenen Ideen und viel Kreativität zum Leben erweckt.\nEr hat selbstständig gearbeitet, Verantwortung übernommen und uns eine riesige Last von den Schultern genommen. Wir sind dankbar und begeistert! Wir können Leon von ganzem Herzen wärmstens empfehlen."
+        }
+      }
+    ]
+  },
+  "work": {
+    "cases": [
+      {
+        "id": "oakstone",
+        "title": "Oakstone Hills",
+        "year": "2025",
+        "tags": [
+          "Brand Identity",
+          "Web Design"
+        ],
+        "desc": {
+          "EN": "Complete brand system and Webflow site for a premium real estate developer.",
+          "DE": "Komplettes Markensystem und Webflow-Website für einen Premium-Immobilienentwickler."
+        },
+        "tone": "moody"
+      },
+      {
+        "id": "joetrenk",
+        "title": "Joe Trenk / Leben Lehrt",
+        "year": "2023",
+        "tags": [
+          "Web Design",
+          "Brand"
+        ],
+        "desc": {
+          "EN": "Website design and development for a German life coach — built twice, loved both times.",
+          "DE": "Webdesign und Entwicklung für einen deutschen Life-Coach — zweimal gebaut, beide Male geliebt."
+        },
+        "tone": "portrait"
+      }
+    ],
+    "note": {
+      "EN": "Most of my work is under NDA. If you'd like to see more — let's talk.",
+      "DE": "Der Großteil meiner Arbeit unterliegt einer NDA. Wenn du mehr sehen möchtest — lass uns reden."
+    },
+    "cta": {
+      "EN": "Book a Call",
+      "DE": "Termin buchen"
+    }
+  },
+  "contact": {
+    "headline": {
+      "EN": "Let's create something meaningful.",
+      "DE": "Lass uns etwas Echtes erschaffen."
+    },
+    "sub": {
+      "EN": "Whether it's a brand, a website or a conversation — I'm just a message away.",
+      "DE": "Ob Marke, Website oder Gespräch — ich bin nur eine Nachricht entfernt."
+    },
+    "email": "amezen.artworks@gmail.com",
+    "booking": {
+      "label": {
+        "EN": "Book a free call",
+        "DE": "Kostenloses Gespräch buchen"
+      },
+      "href": "https://cal.com/amezen.artworks",
+      "display": "cal.com/amezen.artworks"
+    },
+    "location": {
+      "EN": "Currently based in Bali, Indonesia — working globally",
+      "DE": "Derzeit auf Bali, Indonesien — weltweit tätig"
+    },
+    "socials": [
+      {
+        "label": "Instagram",
+        "handle": "@leonslifelearnings",
+        "href": "https://instagram.com/leonslifelearnings"
+      },
+      {
+        "label": "LinkedIn",
+        "handle": "Leon",
+        "href": "#"
+      }
+    ]
+  },
+  "ui": {
+    "selectedWork": {
+      "EN": "Selected work",
+      "DE": "Ausgewählte Arbeiten"
+    },
+    "seeAll": {
+      "EN": "See all work",
+      "DE": "Alle Arbeiten"
+    },
+    "kindWords": {
+      "EN": "Kind words",
+      "DE": "Schöne Worte"
+    },
+    "viewCase": {
+      "EN": "View case study",
+      "DE": "Case Study ansehen"
+    }
+  },
+  "footer": {
+    "tagline": {
+      "EN": "Let's keep in touch",
+      "DE": "Bleiben wir in Kontakt"
+    },
+    "instagram": {
+      "label": "Instagram",
+      "handle": "@leonslifelearnings",
+      "href": "https://instagram.com/leonslifelearnings"
+    },
+    "email": {
+      "label": "Email",
+      "value": "amezen.artworks@gmail.com"
+    },
+    "rights": {
+      "EN": "All rights reserved",
+      "DE": "Alle Rechte vorbehalten"
+    },
+    "brand": "Âmezen Artworks"
+  },
+  "cases": {
+    "oakstone": {
+      "id": "oakstone",
+      "title": "Oakstone Hills",
+      "tagline": "Movement for body & mind — a retreat website experience.",
+      "year": "2025",
+      "client": "Oakstone Hills",
+      "tone": "moody",
+      "tags": [
+        "Brand Identity",
+        "Web Design"
+      ],
+      "services": [
+        "Visual Art Direction",
+        "Concept & Strategy",
+        "Web Design",
+        "Webflow Development",
+        "Project Management"
+      ],
+      "background": "Oakstone Hills is an exclusive retreat destination in the hills of Portugal — a space for yoga, functional training and conscious regeneration, embedded in a nature immersion. The goal was to translate the essence of the place into a digital experience: warm, grounded and nature-driven, and at the same time premium, minimal and modern.",
+      "challenge": {
+        "intro": "The key challenge was capturing the emotional core of Oakstone Hills and turning it into a high-converting digital environment:",
+        "items": [
+          "Translating the founder's vision into an authentic brand tone",
+          "Creating a powerful storytelling and visual flow",
+          "Choosing and implementing the ideal booking platform",
+          "Aligning multiple creative disciplines — copy, photography, brand design",
+          "Designing a smooth, intuitive booking process"
+        ]
+      },
+      "approach": [
+        {
+          "group": "Brand & positioning strategy",
+          "items": [
+            "Market & trend research",
+            "Competitor audit & benchmarking",
+            "Customer personas & journey mapping"
+          ]
+        },
+        {
+          "group": "Content & structure strategy",
+          "items": [
+            "Sitemap & conversion-focused wireframes",
+            "Messaging guidance & brand tone refinement",
+            "Clear and intuitive content flow",
+            "Call-to-action placement & booking orientation"
+          ]
+        },
+        {
+          "group": "Visual art direction",
+          "items": [
+            "Warm, nature-inspired palette",
+            "Photography direction: bright, authentic, human-centered",
+            "Organic shapes, calm spacing, refined typography",
+            "Visual storytelling grounded in nature and movement"
+          ]
+        },
+        {
+          "group": "Web design & development",
+          "items": [
+            "Custom Webflow build",
+            "Smooth animations & micro-interactions",
+            "Fully responsive mobile experience",
+            "Accessible navigation & clear conversion paths"
+          ]
+        },
+        {
+          "group": "Booking system implementation",
+          "items": [
+            "Evaluation & testing of multiple platforms",
+            "Final integration of Bookinglayer",
+            "UX planning for the booking flow",
+            "Technical configuration & launch support"
+          ]
+        }
+      ],
+      "result": {
+        "intro": "A calm yet compelling digital brand experience that evokes trust, inspires action, and brings guests into the world of Oakstone Hills.",
+        "outcomes": [
+          "A strong, cohesive brand identity",
+          "High-quality visual presence aligned with the retreat experience",
+          "Intuitive navigation and booking journey",
+          "Increased visitor engagement & booking confidence",
+          "Positive client & guest feedback post-launch"
+        ],
+        "closing": "The website connects nature, movement and stillness with a modern, premium digital touch — making retreat booking seamless, inviting and emotionally resonant."
+      },
+      "galleryRatio": "9 / 16",
+      "coverRatio": "3 / 2"
+    },
+    "joetrenk": {
+      "id": "joetrenk",
+      "title": "Joe Trenk / Leben Lehrt",
+      "tagline": "A life coach's voice, online — built twice, loved both times.",
+      "year": "2023",
+      "client": "Joe Trenk · Leben Lehrt",
+      "tone": "portrait",
+      "tags": [
+        "Web Design",
+        "Brand"
+      ],
+      "services": [
+        "Web Design",
+        "Webflow Development",
+        "Brand Refinement",
+        "Copy Direction"
+      ],
+      "background": "Joe Trenk is a German life coach whose work is deeply personal — it lives in conversation, presence and trust. His website needed to carry that warmth before a single word was read, and to make booking a session feel like an easy, human next step rather than a transaction.",
+      "challenge": {
+        "intro": "Coaching is intimate, and a website can easily feel cold. The challenge was to keep it personal at every turn:",
+        "items": [
+          "Putting Joe's personality and presence front and centre",
+          "Making the offer clear without sounding like a sales page",
+          "Guiding visitors gently toward booking a first conversation",
+          "Building something flexible enough to grow with his practice"
+        ]
+      },
+      "approach": [
+        {
+          "group": "Brand refinement",
+          "items": [
+            "Sharpening the positioning and voice",
+            "A warmer, more human visual direction",
+            "Photography direction centred on Joe"
+          ]
+        },
+        {
+          "group": "Structure & copy",
+          "items": [
+            "A story-led page flow",
+            "Copy direction that sounds like Joe, not a brochure",
+            "Clear, low-pressure calls to action"
+          ]
+        },
+        {
+          "group": "Design & build",
+          "items": [
+            "Custom Webflow build",
+            "Responsive, calm layouts",
+            "Subtle motion that supports the story"
+          ]
+        },
+        {
+          "group": "The second build",
+          "items": [
+            "A full rework as the practice evolved",
+            "Refined structure and updated visuals",
+            "Carried over everything that worked the first time"
+          ]
+        }
+      ],
+      "result": {
+        "intro": "A website that feels like Joe — warm, grounded and direct — and turns quiet interest into booked conversations.",
+        "outcomes": [
+          "A personal, trustworthy first impression",
+          "A clear path from visitor to booked session",
+          "A site we built twice, better each time",
+          "A platform that grows with the practice"
+        ],
+        "closing": "Built twice, loved both times — the second version kept the soul of the first and gave Joe a home online that genuinely sounds like him."
+      },
+      "galleryRatio": "9 / 16",
+      "coverRatio": "3 / 2"
+    }
+  },
+  "statusLine": "Available for projects · 2026"
+}
