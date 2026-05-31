@@ -21,7 +21,8 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(npx --version)",
       "Bash(gh api *)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:leonneu1923941.github.io)"
     ]
   }
 }

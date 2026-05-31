@@ -88,14 +88,28 @@
       rights:    { EN: "All rights reserved", DE: "Alle Rechte vorbehalten" },
       brand:     "Âmezen Artworks",
     },
+    images: {},
   };
 
-  /* ---------- load from localStorage (CMS) or fall back ---------- */
+  /* ---------- load from localStorage → content.json → hardcoded defaults ---------- */
   function loadContent() {
+    // 1. localStorage (CMS edits take priority)
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) return JSON.parse(raw);
     } catch (e) {}
+
+    // 2. content.json sitting in the repo (works on GitHub Pages)
+    try {
+      const inCases = location.pathname.includes('/cases/');
+      const jsonPath = inCases ? '../content.json' : 'content.json';
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', jsonPath, false); // synchronous
+      xhr.send();
+      if (xhr.status === 200) return JSON.parse(xhr.responseText);
+    } catch (e) {}
+
+    // 3. Hardcoded fallback
     return DEFAULT_CONTENT;
   }
 
