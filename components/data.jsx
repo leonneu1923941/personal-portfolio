@@ -93,13 +93,26 @@
 
   /* ---------- load from localStorage → content.json → hardcoded defaults ---------- */
 
+  // Detect how many levels deep this page is from the project root by looking
+  // at the stylesheet link, which always references colors_and_type.css with the
+  // correct relative prefix ('' at root, '../' one level deep). This works on
+  // any host/subdirectory (localhost, GitHub Pages /personal-portfolio/, etc.)
+  // and is more reliable than parsing location.pathname.
+  function getRootPrefix() {
+    const link = document.querySelector('link[href*="colors_and_type.css"]');
+    if (link) {
+      const href = link.getAttribute('href');
+      const m = href.match(/^((?:\.\.\/)+)/);
+      return m ? m[1] : '';
+    }
+    // Fallback: count /cases/ depth in pathname
+    return location.pathname.includes('/cases/') ? '../' : '';
+  }
+
   function fetchContentJson() {
     try {
-      // Relative path so it works under any host subdirectory (e.g. GitHub Pages /personal-portfolio/)
-      const inCases = location.pathname.includes('/cases/');
-      const jsonPath = inCases ? '../content.json' : 'content.json';
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', jsonPath, false); // synchronous
+      xhr.open('GET', getRootPrefix() + 'content.json', false); // synchronous
       xhr.send();
       if (xhr.status === 200) return JSON.parse(xhr.responseText);
     } catch (e) {}
@@ -107,6 +120,7 @@
   }
 
   function loadContent() {
+    const prefix = getRootPrefix();
     const serverData = fetchContentJson();
 
     // localStorage has priority for text content (CMS edits)
@@ -120,15 +134,14 @@
     }
 
     // Always use images from content.json — localStorage never stores these.
-    // Prefix with '../' on /cases/ pages so relative paths resolve back to the
-    // project root regardless of host subdirectory (e.g. GitHub Pages).
+    // Apply the root prefix to every relative path so images resolve correctly
+    // from any directory depth, regardless of host or subdirectory.
     if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
-      const inCases = location.pathname.includes('/cases/');
-      if (inCases) {
+      if (prefix) {
         const prefixed = {};
         for (const [k, v] of Object.entries(serverData.images)) {
           prefixed[k] = (typeof v === 'string' && !v.startsWith('http') && !v.startsWith('/') && !v.startsWith('../'))
-            ? '../' + v : v;
+            ? prefix + v : v;
         }
         result.images = prefixed;
       } else {
