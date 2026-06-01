@@ -95,8 +95,11 @@
 
   function fetchContentJson() {
     try {
+      // Relative path so it works under any host subdirectory (e.g. GitHub Pages /personal-portfolio/)
+      const inCases = location.pathname.includes('/cases/');
+      const jsonPath = inCases ? '../content.json' : 'content.json';
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', '/content.json', false); // synchronous, absolute path works from any depth
+      xhr.open('GET', jsonPath, false); // synchronous
       xhr.send();
       if (xhr.status === 200) return JSON.parse(xhr.responseText);
     } catch (e) {}
@@ -116,9 +119,21 @@
       if (serverData) result = serverData;
     }
 
-    // Always use images from content.json — localStorage never stores these
+    // Always use images from content.json — localStorage never stores these.
+    // Prefix with '../' on /cases/ pages so relative paths resolve back to the
+    // project root regardless of host subdirectory (e.g. GitHub Pages).
     if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
-      result.images = serverData.images;
+      const inCases = location.pathname.includes('/cases/');
+      if (inCases) {
+        const prefixed = {};
+        for (const [k, v] of Object.entries(serverData.images)) {
+          prefixed[k] = (typeof v === 'string' && !v.startsWith('http') && !v.startsWith('/') && !v.startsWith('../'))
+            ? '../' + v : v;
+        }
+        result.images = prefixed;
+      } else {
+        result.images = serverData.images;
+      }
     }
 
     return result;
