@@ -22,7 +22,13 @@
       "Bash(npx --version)",
       "Bash(gh api *)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:leonneu1923941.github.io)"
+      "WebFetch(domain:leonneu1923941.github.io)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(v\\) for k,v in d.items\\(\\) if 'image' in k.lower\\(\\) or \\(isinstance\\(v,str\\) and \\('jpg' in v or 'png' in v or 'webp' in v or '/images' in v\\)\\)]\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('content.json'\\)\\); print\\(json.dumps\\({k:v for k,v in d.items\\(\\) if isinstance\\(v,str\\) and any\\(x in v for x in ['.jpg','.png','.webp','image']\\)}, indent=2\\)\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git remote *)"
     ]
   }
 }
