@@ -34,10 +34,21 @@ const workStyles = {
 };
 
 function CaseCard({ data, lang, no }) {
+  const isMobile = useIsMobile();
+  const cardStyle = isMobile
+    ? { ...workStyles.card, flexDirection: "column", gap: "0", padding: "10px" }
+    : workStyles.card;
+  const thumbStyle = isMobile
+    ? { width: "100%", borderRadius: "var(--r-inner)", overflow: "hidden", background: TONE_BG[data.tone] || "var(--surface-2)" }
+    : { ...workStyles.thumbWrap, background: TONE_BG[data.tone] || "var(--surface-2)" };
+  const bodyStyle = isMobile
+    ? { ...workStyles.body, padding: "14px 6px 6px" }
+    : workStyles.body;
+
   return (
     <a href={`cases/case.html?id=${encodeURIComponent(data.id)}`} style={{ textDecoration: "none", display: "block" }}>
-      <Tile style={workStyles.card}>
-        <div style={{ ...workStyles.thumbWrap, background: TONE_BG[data.tone] || "var(--surface-2)" }}>
+      <Tile style={cardStyle}>
+        <div style={thumbStyle}>
           <image-slot
             id={`work-${data.id}`}
             shape="rounded"
@@ -45,10 +56,10 @@ function CaseCard({ data, lang, no }) {
             fit="cover"
             placeholder={`Drop ${data.title} cover`}
             src={CONTENT.images && CONTENT.images[`work-${data.id}`] || ""}
-            style={{ width: "100%", height: "100%", minHeight: "150px", display: "block" }}
+            style={{ width: "100%", aspectRatio: isMobile ? "16 / 9" : "auto", height: isMobile ? "auto" : "100%", minHeight: isMobile ? "auto" : "150px", display: "block" }}
           ></image-slot>
         </div>
-        <div style={workStyles.body}>
+        <div style={bodyStyle}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
             <Glyph name="waypoint" size={12} color="var(--ink-3)" />
             <MonoTag>Project no.{no}</MonoTag>

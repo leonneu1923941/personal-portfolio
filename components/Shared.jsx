@@ -76,4 +76,15 @@ function LogoStrip() {
   );
 }
 
-Object.assign(window, { Tile, Clock, LangToggle, LogoStrip });
+// --- Mobile breakpoint hook ------------------------------------
+function useIsMobile(breakpoint = 540) {
+  const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, [breakpoint]);
+  return isMobile;
+}
+
+Object.assign(window, { Tile, Clock, LangToggle, LogoStrip, useIsMobile });

@@ -17,14 +17,15 @@ const navStyles = {
   pills: { display: "flex", alignItems: "center", gap: "var(--s-2)", marginLeft: "auto" },
 };
 
-function NavPill({ id, label, active, onClick }) {
+function NavPill({ id, label, active, onClick, compact }) {
   const base = {
-    display: "inline-flex", alignItems: "center", gap: "8px",
+    display: "inline-flex", alignItems: "center", gap: compact ? "5px" : "8px",
     border: "none", cursor: "pointer", borderRadius: "var(--r-pill)",
-    padding: "10px 16px",
-    font: "600 var(--t-small)/1 var(--font-sans)",
+    padding: compact ? "8px 10px" : "10px 16px",
+    font: `600 ${compact ? "12px" : "var(--t-small)"}/1 var(--font-sans)`,
     transition: "background-color var(--dur) var(--ease), color var(--dur) var(--ease)",
     WebkitTapHighlightColor: "transparent",
+    whiteSpace: "nowrap",
   };
   const skin = active
     ? { backgroundColor: "var(--accent)", color: "var(--accent-ink)" }
@@ -32,12 +33,13 @@ function NavPill({ id, label, active, onClick }) {
   return (
     <button style={{ ...base, ...skin }} onClick={onClick} aria-pressed={active}>
       <span>{label}</span>
-      <SignIcon open={active} size={18} color="currentColor" />
+      <SignIcon open={active} size={compact ? 14 : 18} color="currentColor" />
     </button>
   );
 }
 
 function Nav({ tab, setTab, lang }) {
+  const isMobile = useIsMobile();
   const L = CONTENT.nav[lang];
   const items = [
     { id: "info", label: L.info },
@@ -45,13 +47,13 @@ function Nav({ tab, setTab, lang }) {
     { id: "contact", label: L.contact },
   ];
   return (
-    <nav style={navStyles.bar}>
+    <nav style={{ ...navStyles.bar, padding: isMobile ? "8px 8px 8px 12px" : "10px 12px 10px 18px" }}>
       <button style={navStyles.markBtn} onClick={() => setTab("info")} aria-label="Home">
         <BrandMark size={24} />
       </button>
-      <div style={navStyles.pills}>
+      <div style={{ ...navStyles.pills, gap: isMobile ? "4px" : "var(--s-2)" }}>
         {items.map((it) => (
-          <NavPill key={it.id} id={it.id} label={it.label}
+          <NavPill key={it.id} id={it.id} label={it.label} compact={isMobile}
                    active={tab === it.id} onClick={() => setTab(it.id)} />
         ))}
       </div>
