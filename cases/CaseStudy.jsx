@@ -87,6 +87,10 @@ function caseHref(id) {
   return `case.html?id=${encodeURIComponent(id)}`;
 }
 
+function caseImageSrc(id, slot) {
+  return (CONTENT.images && CONTENT.images[`${id}-${slot}`]) || "";
+}
+
 function CaseStudy({ c }) {
   // Set page <title> dynamically
   React.useEffect(() => {
@@ -127,6 +131,7 @@ function CaseStudy({ c }) {
           <image-slot
             id={`${c.id}-cover`} shape="rounded" radius="16" fit="cover"
             placeholder={`Drop ${c.title} hero image`}
+            src={caseImageSrc(c.id, "cover")}
             style={{ width: "100%", aspectRatio: c.coverRatio || "16 / 9", height: "auto", display: "block" }}
           ></image-slot>
         </div>
@@ -182,6 +187,7 @@ function CaseStudy({ c }) {
               <image-slot
                 id={`${c.id}-gallery-${n}`} shape="rounded" radius="16" fit="cover"
                 placeholder={`Drop image ${n}`}
+                src={caseImageSrc(c.id, `gallery-${n}`)}
                 style={{ width: "100%", aspectRatio: c.galleryRatio || "4 / 5", height: "auto", display: "block" }}
               ></image-slot>
             </div>
